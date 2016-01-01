@@ -1,5 +1,3 @@
-skynet is a very small implementation of the TCP/IP stack that is written
-
 The directory structure look as follows:
 
 apps/  - contains some sample applications
