@@ -56,7 +56,7 @@ struct uip_conn *uip_connect(u16_t *ripaddr, u16_t port);
  * Send data on the current connection. The length of the data must
  * not exceed the maxium segment size (MSS) for the connection.
  */
-#define uip_send(data, len) do { uip_appdata = data; uip_len = len;} while(0)   
+#define uip_send(data, len) do { uip_appdata = (u8_t *)data; uip_len = len;} while(0)   
 
 /* uip_datalen():
  *
