@@ -21,7 +21,7 @@
 
 #include "uip.h"
 
-static int drop = 0;
+//static int drop = 0;
 static int fd;
 
 static unsigned long lasttime;
@@ -31,6 +31,7 @@ static struct timezone tz;
 void
 tapdev_init(void)
 {
+  int ret = 0;
   char buf[1024];
   
   fd = open(DEVTAP, O_RDWR);
@@ -53,7 +54,7 @@ tapdev_init(void)
 
   snprintf(buf, sizeof(buf), "ifconfig tap0 inet %d.%d.%d.%d",
 	   UIP_DRIPADDR0, UIP_DRIPADDR1, UIP_DRIPADDR2, UIP_DRIPADDR3);
-  system(buf);
+  if((ret = system(buf)) == -1) printf("system call error!\n");
 
   lasttime = 0;
 }
