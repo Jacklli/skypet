@@ -444,10 +444,3 @@ typedef struct {
 
 
 #endif /* __UIP_H__ */
-
-
-
-
-
-
-
