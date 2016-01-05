@@ -1,6 +1,6 @@
-#include "uip.h"
+#include "net.h"
 #include "uipopt.h"
-#include "uip_arch.h"
+#include "arch.h"
 
 /*-----------------------------------------------------------------------------------*/
 /* Variable definitions. */

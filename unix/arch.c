@@ -1,5 +1,5 @@
-#include "uip.h"
-#include "uip_arch.h"
+#include "net.h"
+#include "arch.h"
 
 #define BUF ((uip_tcpip_hdr *)&uip_buf[UIP_LLH_LEN])
 #define IP_PROTO_TCP    6

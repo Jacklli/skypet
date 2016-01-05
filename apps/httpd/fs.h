@@ -1,7 +1,7 @@
 #ifndef __FS_H__
 #define __FS_H__
 
-#include "uip.h"
+#include "net.h"
 
 struct fs_file {
   char *data;

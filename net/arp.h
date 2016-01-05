@@ -1,7 +1,7 @@
 #ifndef __UIP_ARP_H__
 #define __UIP_ARP_H__
 
-#include "uip.h"
+#include "net.h"
 
 struct uip_eth_addr {
   u8_t addr[6];

@@ -1,4 +1,4 @@
-#include "uip_arp.h"
+#include "arp.h"
 
 struct arp_hdr {
   struct uip_eth_hdr ethhdr;

@@ -1,4 +1,4 @@
-#include "uip.h"
+#include "net.h"
 #include "fs.h"
 #include "fsdata.h"
 

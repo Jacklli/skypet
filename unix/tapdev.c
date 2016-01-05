@@ -19,7 +19,7 @@
 #define DEVTAP "/dev/tap0"
 #endif /* linux */
 
-#include "uip.h"
+#include "net.h"
 
 //static int drop = 0;
 static int fd;

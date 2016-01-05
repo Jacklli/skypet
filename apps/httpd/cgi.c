@@ -8,7 +8,7 @@
  *
  */
 
-#include "uip.h"
+#include "net.h"
 #include "cgi.h"
 #include "httpd.h"
 #include "fs.h"

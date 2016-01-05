@@ -1,7 +1,7 @@
 #ifndef __UIP_ARCH_H__
 #define __UIP_ARCH_H__
 
-#include "uip.h"
+#include "net.h"
 
 #if UIP_BUFSIZE > 255
 void uip_add_rcv_nxt(u16_t n);

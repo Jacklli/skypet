@@ -1,5 +1,5 @@
-#include "uip.h"
-#include "uip_arp.h"
+#include "net.h"
+#include "arp.h"
 #include "tapdev.h"
 #include "httpd.h"
 
