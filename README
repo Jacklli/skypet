@@ -2,5 +2,5 @@
 The directory structure look as follows:
 
 apps/  - contains some sample applications
-stack/   - actual uIP TCP/IP and ARP code
-unix   - uIP as a user space process under FreeBSD or Linux
+net/   - actual TCP/IP and ARP code
+unix   - skypet as a user space process under FreeBSD or Linux
