@@ -283,6 +283,10 @@ uip_process(u8_t flag)
     goto drop;
   }
 
+
+// UIP_TIMER END
+// UIP_DATA BEGIN 
+
   /* This is where the input processing starts. */
   UIP_STAT(++uip_stat.ip.recv);
   
@@ -293,6 +297,8 @@ uip_process(u8_t flag)
     UIP_LOG("ip: invalid version or header length.");
     goto drop;
   }
+
+
   
   /* Check the size of the packet. If the size reported to us in
      uip_len doesn't match the size reported in the IP header, there
