@@ -5,11 +5,11 @@ CFLAGS=-Wall -g -fpack-struct -I../net -I. -I../driver -I./httpd -O1
 	$(CC) $(CFLAGS) -c $(<:.o=.c)
 
 
-net: net.o arch.o tapdev.o httpd.o main.o fs.o arp.o cgi.o
+net: net.o arch.o tapdev.o httpd.o main.o fs.o arp.o
 
 httpd.o: httpd/httpd.c httpd/httpd.h ../net/net.h \
  ../driver/uipopt.h httpd/fs.h
-cgi.o: httpd/cgi.c ../net/net.h ../driver/uipopt.h httpd/httpd.h \
+#cgi.o: httpd/cgi.c ../net/net.h ../driver/uipopt.h httpd/httpd.h \
  httpd/cgi.h ../apps/httpd/fs.h
 fs.o: httpd/fs.c ../net/net.h ../driver/uipopt.h ../apps/httpd/httpd.h \
  httpd/fs.h ../apps/httpd/fsdata.h \
