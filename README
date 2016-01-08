@@ -1,6 +1,5 @@
-
 The directory structure look as follows:
 
-apps/  - contains some sample applications
-net/   - actual TCP/IP and ARP code
-unix   - skypet as a user space process under FreeBSD or Linux
+apps/    - contains some sample applications
+net/     - actual TCP/IP and ARP code
+driver/  - device interface for data process under FreeBSD or Linux

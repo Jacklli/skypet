@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -g -fpack-struct -I../net -I. -I../apps/httpd -O1
+CFLAGS=-Wall -g -fpack-struct -I../net -I. -I../driver -I./httpd -O1
 
 %.o:
 	$(CC) $(CFLAGS) -c $(<:.o=.c)
@@ -7,22 +7,22 @@ CFLAGS=-Wall -g -fpack-struct -I../net -I. -I../apps/httpd -O1
 
 net: net.o arch.o tapdev.o httpd.o main.o fs.o arp.o cgi.o
 
-httpd.o: ../apps/httpd/httpd.c ../apps/httpd/httpd.h ../net/net.h \
- uipopt.h ../apps/httpd/fs.h
-cgi.o: ../apps/httpd/cgi.c ../net/net.h uipopt.h ../apps/httpd/httpd.h \
- ../apps/httpd/cgi.h ../apps/httpd/fs.h
-fs.o: ../apps/httpd/fs.c ../net/net.h uipopt.h ../apps/httpd/httpd.h \
- ../apps/httpd/fs.h ../apps/httpd/fsdata.h \
- ../apps/httpd/fsdata.c
-tapdev.o: tapdev.c uipopt.h
-main.o: main.c ../net/net.h uipopt.h ../apps/httpd/httpd.h \
- tapdev.h
-arch.o: arch.c arch.h ../net/net.h uipopt.h \
- ../apps/httpd/httpd.h 
-net.o: ../net/net.c ../net/net.h uipopt.h ../apps/httpd/httpd.h 
+httpd.o: httpd/httpd.c httpd/httpd.h ../net/net.h \
+ ../driver/uipopt.h httpd/fs.h
+cgi.o: httpd/cgi.c ../net/net.h ../driver/uipopt.h httpd/httpd.h \
+ httpd/cgi.h ../apps/httpd/fs.h
+fs.o: httpd/fs.c ../net/net.h ../driver/uipopt.h ../apps/httpd/httpd.h \
+ httpd/fs.h ../apps/httpd/fsdata.h \
+ httpd/fsdata.c
+tapdev.o: ../driver/tapdev.c ../driver/uipopt.h
+main.o: main.c ../net/net.h ../driver/uipopt.h httpd/httpd.h \
+ ../driver/tapdev.h
+arch.o: ../driver/arch.c ../driver/arch.h ../net/net.h ../driver/uipopt.h \
+ httpd/httpd.h 
+net.o: ../net/net.c ../net/net.h ../driver/uipopt.h httpd/httpd.h 
 
-arp.o: ../net/arp.c ../net/arp.h ../net/net.h uipopt.h \
- ../apps/httpd/httpd.h 
+arp.o: ../net/arp.c ../net/arp.h ../net/net.h ../driver/uipopt.h \
+ httpd/httpd.h 
 
 clean:
 	rm -f *.o *~ *core net
