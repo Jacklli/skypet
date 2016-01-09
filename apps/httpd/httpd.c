@@ -26,8 +26,6 @@ struct httpd_state *hs;
 
 extern const struct fsdata_file file_index_html;
 
-//static void next_scriptline(void);
-//static void next_scriptstate(void);
 
 #define ISO_G        0x47
 #define ISO_E        0x45
@@ -45,7 +43,6 @@ extern const struct fsdata_file file_index_html;
 #define ISO_period   0x2e
 
 
-/*-----------------------------------------------------------------------------------*/
 void
 httpd_init(void)
 {
@@ -54,7 +51,7 @@ httpd_init(void)
   /* Listen to port 80. */
   uip_listen(80);
 }
-/*-----------------------------------------------------------------------------------*/
+
 void
 httpd(void)
 {
@@ -128,27 +125,16 @@ httpd(void)
 	fs_open(file_index_html.name, &fsfile);
       } 
 
-      if(uip_appdata[4] == ISO_slash &&
-	 uip_appdata[5] == ISO_c &&
-	 uip_appdata[6] == ISO_g &&
-	 uip_appdata[7] == ISO_i &&
-	 uip_appdata[8] == ISO_slash) {
-	/* If the request is for a file that starts with "/cgi/", we
-           prepare for invoking a script. */	
-	hs->script = fsfile.data;
-//	next_scriptstate();
-      } else {
-	hs->script = NULL;
-	/* The web server is now no longer in the HTTP_NOGET state, but
+      hs->script = NULL;
+      /* The web server is now no longer in the HTTP_NOGET state, but
 	   in the HTTP_FILE state since is has now got the GET from
 	   the client and will start transmitting the file. */
-	hs->state = HTTP_FILE;
+      hs->state = HTTP_FILE;
 
-	/* Point the file pointers in the connection state to point to
+      /* Point the file pointers in the connection state to point to
 	   the first byte of the file. */
-	hs->dataptr = fsfile.data;
-	hs->count = fsfile.len;	
-      }     
+      hs->dataptr = fsfile.data;
+      hs->count = fsfile.len;	
     }
 
     
@@ -166,29 +152,9 @@ httpd(void)
 	  hs->count = 0;
 	}
 	
-/*
-	if(hs->count == 0) {
-	  if(hs->script != NULL) {
-	    next_scriptline();
-	    next_scriptstate();
-	  } else {
-	    uip_close();
-	  }
-	}
-*/
       }         
     }
     
-//    if(hs->state == HTTP_FUNC) {
-//      /* Call the CGI function. */
-//      if(cgitab[hs->script[2] - ISO_a]()) {
-	/* If the function returns non-zero, we jump to the next line
-           in the script. */
-//	next_scriptline();
-//	next_scriptstate();
-//     }
-//    }
-
     if(hs->state != HTTP_FUNC && !uip_poll()) {
       /* Send a piece of data, but not more than the MSS of the
 	 connection. */

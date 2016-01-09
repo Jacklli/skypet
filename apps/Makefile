@@ -9,6 +9,8 @@ net: net.o arch.o tapdev.o httpd.o main.o fs.o arp.o
 
 httpd.o: httpd/httpd.c httpd/httpd.h ../net/net.h \
  ../driver/uipopt.h httpd/fs.h
+httpd.o: httpd/httpd.c httpd/httpd.h ../net/net.h \
+ ../driver/uipopt.h
 #cgi.o: httpd/cgi.c ../net/net.h ../driver/uipopt.h httpd/httpd.h \
  httpd/cgi.h ../apps/httpd/fs.h
 fs.o: httpd/fs.c ../net/net.h ../driver/uipopt.h ../apps/httpd/httpd.h \
