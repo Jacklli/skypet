@@ -185,10 +185,8 @@ uip_listen(u16_t port)
 }
 /*-----------------------------------------------------------------------------------*/
 void
-uip_process(u8_t flag)
+uip_timer(u8_t flag)
 {
-  uip_appdata = &uip_buf[40 + UIP_LLH_LEN];
-    
   /* Check if we were invoked because of the perodic timer fireing. */
   if(flag == UIP_TIMER) {
     /* Increase the initial sequence number. */
@@ -283,10 +281,77 @@ uip_process(u8_t flag)
     goto drop;
   }
 
+   /* Our response will be a SYNACK. */
+#if UIP_ACTIVE_OPEN
+ tcp_send_synack:
+  BUF->flags = TCP_ACK;    
+ tcp_send_syn:
+  BUF->flags |= TCP_SYN;    
+#else /* UIP_ACTIVE_OPEN */
+ tcp_send_synack:
+  BUF->flags = TCP_SYN | TCP_ACK;    
+#endif /* UIP_ACTIVE_OPEN */
+
+ tcp_send_noopts:
+   BUF->tcpoffset = 5 << 4;
+
+ apprexmit:
+   /* If the application has data to be sent, or if the incoming
+      packet had new data in it, we must send out a packet. */
+   if(uip_len > 0 || (uip_flags & UIP_NEWDATA)) {
+     /* Add the length of the IP and TCP headers. */
+     uip_len = uip_len + 40;
+     /* We always set the ACK flag in response packets. */
+     BUF->flags = TCP_ACK;
+     /* Send the packet. */
+     goto tcp_send_noopts;
+    }
+ tcp_send_finack:
+   BUF->flags = TCP_FIN | TCP_ACK;      
+   goto tcp_send_nodata;
+
+  /* We jump here when we are ready to send the packet, and just want
+     to set the appropriate TCP sequence numbers in the TCP header. */
+ appsend:
+   if(uip_flags & UIP_ABORT) {
+     uip_conn->tcpstateflags = CLOSED;
+     BUF->flags = TCP_RST | TCP_ACK;
+     goto tcp_send_nodata;
+   }
+
+   if(uip_flags & UIP_CLOSE) {
+     uip_add_ack_nxt(1);
+     uip_conn->tcpstateflags = FIN_WAIT_1 | UIP_OUTSTANDING;
+     uip_conn->nrtx = 0;
+     BUF->flags = TCP_FIN | TCP_ACK;
+     goto tcp_send_nodata;
+   }
+
+   /* If uip_len > 0, the application has data to be sent, in which
+      case we set the UIP_OUTSTANDING flag in the connection
+      structure. But we cannot send data if the application already
+      has outstanding data. */
+   if(uip_len > 0 &&
+      !(uip_conn->tcpstateflags & UIP_OUTSTANDING)) {
+     uip_conn->tcpstateflags |= UIP_OUTSTANDING;
+     uip_conn->nrtx = 0;
+     uip_add_ack_nxt(uip_len);
+   } else {
+     uip_len = 0;
+   }
+ tcp_send_nodata:
+  uip_len = 40; 
+ drop:
+  uip_len = 0;
+  return;
+}
+
 
 // UIP_TIMER END
 // UIP_DATA BEGIN 
+void uip_processData(u8_t flag) {
 
+  uip_appdata = &uip_buf[40 + UIP_LLH_LEN];
   /* This is where the input processing starts. */
   UIP_STAT(++uip_stat.ip.recv);
   
@@ -583,9 +648,6 @@ uip_process(u8_t flag)
   
  tcp_send_syn:
   BUF->flags |= TCP_SYN;    
-#else /* UIP_ACTIVE_OPEN */
- tcp_send_synack:
-  BUF->flags = TCP_SYN | TCP_ACK;    
 #endif /* UIP_ACTIVE_OPEN */
   
   /* We send out the TCP Maximum Segment Size option with our
@@ -747,9 +809,6 @@ uip_process(u8_t flag)
       uip_add_ack_nxt(1);
       uip_conn->tcpstateflags = LAST_ACK | UIP_OUTSTANDING;
       uip_conn->nrtx = 0;
-    tcp_send_finack:
-      BUF->flags = TCP_FIN | TCP_ACK;      
-      goto tcp_send_nodata;
     }
 
     
@@ -809,17 +868,6 @@ uip_process(u8_t flag)
 	uip_add_ack_nxt(uip_len);
       } else {
 	uip_len = 0;
-      }
-    apprexmit:
-      /* If the application has data to be sent, or if the incoming
-         packet had new data in it, we must send out a packet. */
-      if(uip_len > 0 || (uip_flags & UIP_NEWDATA)) {
-	/* Add the length of the IP and TCP headers. */
-	uip_len = uip_len + 40;
-	/* We always set the ACK flag in response packets. */
-	BUF->flags = TCP_ACK;
-	/* Send the packet. */
-	goto tcp_send_noopts;
       }
     }
     goto drop;
@@ -889,8 +937,6 @@ uip_process(u8_t flag)
   BUF->flags = TCP_ACK;
  tcp_send_nodata:
   uip_len = 40;
- tcp_send_noopts:
-  BUF->tcpoffset = 5 << 4;
  tcp_send:
   /* We're done with the input processing. We are now ready to send a
      reply. Our job is to fill in all the fields of the TCP and IP
