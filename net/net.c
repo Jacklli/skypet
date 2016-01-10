@@ -185,10 +185,9 @@ uip_listen(u16_t port)
 }
 /*-----------------------------------------------------------------------------------*/
 void
-uip_timer(u8_t flag)
+uip_timer()
 {
   /* Check if we were invoked because of the perodic timer fireing. */
-  if(flag == UIP_TIMER) {
     /* Increase the initial sequence number. */
     if(++iss[3] == 0) {
       if(++iss[2] == 0) {
@@ -277,7 +276,6 @@ uip_timer(u8_t flag)
 	UIP_APPCALL();
 	goto appsend;
       }
-    }   
     goto drop;
   }
 
@@ -349,7 +347,7 @@ uip_timer(u8_t flag)
 
 // UIP_TIMER END
 // UIP_DATA BEGIN 
-void uip_processData(u8_t flag) {
+void uip_processData() {
 
   uip_appdata = &uip_buf[40 + UIP_LLH_LEN];
   /* This is where the input processing starts. */

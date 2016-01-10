@@ -21,13 +21,13 @@ void uip_init(void);
  * called once per connection (0 - UIP_CONNS).
  */
 #define uip_periodic(conn) do { uip_conn = &uip_conns[conn]; \
-                                uip_timer(UIP_TIMER); } while (0)
+                                uip_timer(); } while (0)
 
 /* uip_input():
  *
  * Is called when the network device driver has received new data.
  */
-#define uip_input()        uip_processData(UIP_DATA)
+#define uip_input()        uip_processData()
 
 /*-----------------------------------------------------------------------------------*/
 /* Functions that are used by the uIP application program. Opening and
@@ -388,8 +388,8 @@ extern volatile u8_t uip_flags;
  */
 void uip_process(u8_t flag);
 
-void uip_timer(u8_t flag);
-void uip_processData(u8_t flag);
+void uip_timer();
+void uip_processData();
 
 /* The following flags are passed as an argument to the uip_process()
    function. They are used to distinguish between the two cases where
